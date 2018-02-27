@@ -13,6 +13,6 @@ services:
       - SN_REQUESTS_CONFIG_FILE=${SN_REQUESTS_CONFIG_FILE}
       - https_proxy=${https_proxy}
     volumes:
-      - ./cer-api/application.properties:/application.properties
+      - ./cer-api/deploy.properties:/application.properties
       - ${DATA_DIR}/config/requests-config.json:/requests-config.json
     restart: always
