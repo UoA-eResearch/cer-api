@@ -33,7 +33,7 @@ RUN             rm -f /apache-maven.tar.gz
 WORKDIR         /cer-api/
 
 # Resolve dependencies with maven, stops maven from re-downloading dependencies
-COPY            /pom.xml /research-hub-api/pom.xml
+COPY            /pom.xml /cer-api/pom.xml
 RUN             mvn dependency:go-offline
 RUN             mvn verify clean --fail-never
 
