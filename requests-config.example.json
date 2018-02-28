@@ -1,0 +1,22 @@
+[
+  {
+    "id": "vm",
+    "shortDescription": "Research VM consultation request",
+    "category": "Research IT",
+    "subcategory": "Research Computing Platforms",
+    "cmdbCiId": "17b42c724fdc36c027c3ab4f0310c7cd",
+    "assignmentGroupId": "0b024896406d05c0b8c650771b44066b",
+    "businessServiceId": "f98caa69f9ee0600b8c6ead41549b040",
+    "watchList": ["ffa9614d81832000cd6291eb11e7450b", "843812dedb52ba001ae6fe3cbf961915", "20746270b95842401b63dd17c5475dce", "f8a9e1c181832000cd6291eb11e745d0"]
+  },
+  {
+    "id": "storage",
+    "shortDescription": "Storage request",
+    "category": "Research IT",
+    "subcategory": "Storage & Data Management",
+    "cmdbCiId": "",
+    "assignmentGroupId": "0b024896406d05c0b8c650771b44066b",
+    "businessServiceId": "f98caa69f9ee0600b8c6ead41549b040",
+    "watchList": ["59aa218181c32000cd6291eb11e745f0", "97a9a9c981832000cd6291eb11e7457a", "30a925c581832000cd6291eb11e745af"]
+  }
+]
