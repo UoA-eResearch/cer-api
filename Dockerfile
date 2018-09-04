@@ -26,7 +26,8 @@ RUN		if [ -z $http_proxy ]; then \
 
 # Copy src files and build project
 COPY            /src /cer-api/src
-RUN 		mvn -o package
+COPY            application.properties /
+RUN             mvn -o package
 RUN             mv target/app.jar /app.jar
 
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.config.location=file:/application.properties","-jar","/app.jar"]
