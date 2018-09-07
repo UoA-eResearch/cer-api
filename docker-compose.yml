@@ -12,3 +12,5 @@ services:
       - SN_PASSWORD
       - SN_REQUESTS_CONFIG_FILE
       - https_proxy
+    volumes:
+      - ${HUB_PATH}/config/cer-api/requests-config.json:/requests-config.json
