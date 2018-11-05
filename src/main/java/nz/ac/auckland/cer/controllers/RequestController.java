@@ -42,6 +42,9 @@ public class RequestController {
     @Value("${service-now.base-url}")
     private String baseUrl;
 
+    @Value("${service-now.api-key")
+    private String apiKey;
+
     @Value("${service-now.user}")
     private String user;
 
