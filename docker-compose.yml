@@ -2,17 +2,15 @@ version: '3.0'
 services:
   cer-api:
     build:
-      context: ./cer-api/
+      context: .
       args:
         - http_proxy
         - https_proxy
     environment:
-      - SN_BASE_URL=${SN_BASE_URL}
-      - SN_USER=${SN_USER}
-      - SN_PASSWORD=${SN_PASSWORD}
-      - SN_REQUESTS_CONFIG_FILE=${SN_REQUESTS_CONFIG_FILE}
-      - https_proxy=${https_proxy}
+      - SN_BASE_URL
+      - SN_USER
+      - SN_PASSWORD
+      - SN_REQUESTS_CONFIG_FILE
+      - https_proxy
     volumes:
-      - ./cer-api/deploy.properties:/application.properties
-      - ${DATA_DIR}/config/requests-config.json:/requests-config.json
-    restart: always
+      - ${HUB_PATH}/config/cer-api/requests-config.json:/requests-config.json
