@@ -194,7 +194,7 @@ public class RequestController {
                                                          String shortDescription, String comments, String[] watchList) throws IOException {
         this.buildClient();
 
-        String url = baseUrl + "/api/now/table/u_request";
+        String url = baseUrl + "/service/servicenow-readwritefull/import/u_rest_u_request";
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         JSONObject response = new JSONObject();
