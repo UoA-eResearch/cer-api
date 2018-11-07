@@ -11,12 +11,13 @@ public class RequestConfig {
     private String assignmentGroupId;
     private String businessServiceId;
     private String[] watchList;
+    private String correlationDisplay;
 
     public RequestConfig() {
 
     }
 
-    public RequestConfig(String id, String shortDescription, String category, String subcategory, String cmdbCiId, String assignmentGroupId, String businessServiceId, String[] watchList) {
+    public RequestConfig(String id, String shortDescription, String category, String subcategory, String cmdbCiId, String assignmentGroupId, String businessServiceId, String[] watchList, String correlationDisplay) {
         this.id = id;
         this.shortDescription = shortDescription;
         this.category = category;
@@ -25,6 +26,7 @@ public class RequestConfig {
         this.assignmentGroupId = assignmentGroupId;
         this.businessServiceId = businessServiceId;
         this.watchList = watchList;
+        this.correlationDisplay = correlationDisplay;
     }
 
     public String getId() {
@@ -89,5 +91,13 @@ public class RequestConfig {
 
     public void setWatchList(String[] watchList) {
         this.watchList = watchList;
+    }
+
+    public String getCorrelationDisplay() {
+        return correlationDisplay;
+    }
+
+    public void setCorrelationDisplay(String correlationDisplay) {
+        this.correlationDisplay = correlationDisplay;
     }
 }
