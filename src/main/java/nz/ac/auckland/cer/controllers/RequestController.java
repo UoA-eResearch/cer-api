@@ -211,6 +211,7 @@ public class RequestController {
                 .put("u_business_service", businessServiceId)
                 .put("short_description", shortDescription)
                 .put("comments", comments)
+                .put("u_correlation_id", "skav012too1338forguids") // TODO: Update with java.util.UUID.randomUUID();
                 .put("watch_list", watchList);
 
         try {
