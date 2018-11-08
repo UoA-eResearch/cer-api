@@ -191,7 +191,7 @@ public class RequestController {
 
     private ResponseEntity<Object> sendServiceNowRequest(String requestorUpi, String category, String subcategory,
                                                          String cmdbCiId, String assignmentGroup, String businessServiceId,
-                                                         String shortDescription, String comments, String[] watchList) throws IOException {
+                                                         String shortDescription, String comments, String watchList) throws IOException {
         this.buildClient();
 
         String url = baseUrl + "/service/servicenow-readwrite/import/u_rest_u_request";
@@ -211,7 +211,7 @@ public class RequestController {
                 .put("u_business_service", businessServiceId)
                 .put("short_description", shortDescription)
                 .put("comments", comments)
-                .put("watch_list", String.join(",", watchList));
+                .put("watch_list", watchList);
 
         try {
             // Submit ticket
