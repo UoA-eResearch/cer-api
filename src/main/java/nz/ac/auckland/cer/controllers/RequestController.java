@@ -101,6 +101,8 @@ public class RequestController {
         okhttp3.RequestBody body = okhttp3.RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("apikey", apiKey)
                 .post(body)
                 .build();
         Response response = client.newCall(request).execute();
