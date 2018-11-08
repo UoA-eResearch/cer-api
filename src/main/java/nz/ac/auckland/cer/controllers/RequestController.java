@@ -174,7 +174,7 @@ public class RequestController {
 
         return this.sendServiceNowRequest(requestorUpi, requestConfig.getCategory(), requestConfig.getSubcategory(),
                 requestConfig.getCmdbCiId(), requestConfig.getAssignmentGroupId(), requestConfig.getBusinessServiceId(),
-                shortDescription, output, requestConfig.getWatchList());
+                shortDescription, output, requestConfig.getWatchList(), requestConfig.getCorrelationDisplay());
     }
 
     private StringTemplate getTemplate(String templateName, String body) throws IOException {
@@ -191,7 +191,7 @@ public class RequestController {
 
     private ResponseEntity<Object> sendServiceNowRequest(String requestorUpi, String category, String subcategory,
                                                          String cmdbCiId, String assignmentGroup, String businessServiceId,
-                                                         String shortDescription, String comments, String watchList) throws IOException {
+                                                         String shortDescription, String comments, String watchList, String correlationDisplay) throws IOException {
         this.buildClient();
 
         String url = baseUrl + "/service/servicenow-readwrite/import/u_rest_u_request";
@@ -204,15 +204,16 @@ public class RequestController {
         // Create ticket body
         JSONObject body = new JSONObject()
                 .put("u_requestor", requestorUpi)
-                .put("assignment_group", assignmentGroup)
-                .put("category", category)
-                .put("subcategory", subcategory)
-                .put("cmdb_ci", cmdbCiId)
+                .put("u_assignment_group", assignmentGroup)
+                .put("u_category", category)
+                .put("u_subcategory", subcategory)
+                .put("u_cmdb_ci", cmdbCiId)
                 .put("u_business_service", businessServiceId)
-                .put("short_description", shortDescription)
-                .put("comments", comments)
+                .put("u_short_description", shortDescription)
+                .put("u_comments", comments)
                 .put("u_correlation_id", "skav012too1338forguids") // TODO: Update with java.util.UUID.randomUUID();
-                .put("watch_list", watchList);
+                .put("u_watch_list", watchList)
+                .put("u_correlation_display", correlationDisplay);
 
         try {
             // Submit ticket
