@@ -45,12 +45,6 @@ public class RequestController {
     @Value("${service-now.api-key")
     private String apiKey;
 
-    @Value("${service-now.user}")
-    private String user;
-
-    @Value("${service-now.password}")
-    private String password;
-
     @Value("${service-now.requests-config-file}")
     private String requestsConfigFile;
 
@@ -74,17 +68,6 @@ public class RequestController {
                 builder.proxy(proxy);
             }
 
-            builder.authenticator(new Authenticator() {
-                @Override
-                public Request authenticate(Route route, Response response) throws IOException {
-                    if (responseCount(response) >= 3) {
-                        return null; // If we've failed 3 times, give up. - in real life, never give up!!
-                    }
-
-                    String credential = Credentials.basic(user, password);
-                    return response.request().newBuilder().header("Authorization", credential).build();
-                }
-            });
             client = builder.build();
         }
     }
