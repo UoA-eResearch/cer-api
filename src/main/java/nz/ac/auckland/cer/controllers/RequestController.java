@@ -129,7 +129,8 @@ public class RequestController {
                                                 @RequestAttribute(value = "mail") String mail,
                                                 @RequestBody String body) throws IOException {
 
-        logger.info("createServiceRequest() called with arguments", requestorUpi, displayName, mail, body);
+        String testVar = "This is to see if logger.info() logs variables";
+        logger.info("createServiceRequest() called with arguments", requestorUpi, testVar, displayName, mail, body);
 
         return this.createRequest("vm", requestorUpi, displayName, mail, body);
     }
