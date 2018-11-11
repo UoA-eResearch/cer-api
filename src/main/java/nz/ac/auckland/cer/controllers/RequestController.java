@@ -129,6 +129,8 @@ public class RequestController {
                                                 @RequestAttribute(value = "mail") String mail,
                                                 @RequestBody String body) throws IOException {
 
+        logger.info("createServiceRequest() called with arguments", requestorUpi, displayName, mail, body);
+
         return this.createRequest("vm", requestorUpi, displayName, mail, body);
     }
 
@@ -147,6 +149,9 @@ public class RequestController {
 
     private ResponseEntity<Object> createRequest(String requestConfigKey, String requestorUpi, String displayName,
                                                  String mail, String body) throws IOException {
+
+        logger.info("createRequest() called with arguments", requestConfigKey, requestorUpi, displayName, mail, body);
+
         RequestConfig requestConfig = this.getRequestConfig(requestConfigKey);
 
         // Generate comments based on template
@@ -177,6 +182,9 @@ public class RequestController {
     private ResponseEntity<Object> sendServiceNowRequest(String requestorUpi, String category, String subcategory,
                                                          String cmdbCiId, String assignmentGroup, String businessServiceId,
                                                          String shortDescription, String comments, String watchList, String correlationDisplay) throws IOException {
+
+        logger.info("sendServiceNowRequest() called with arguments", requestorUpi, category, subcategory, cmdbCiId, assignmentGroup, businessServiceId, shortDescription, comments, watchList, correlationDisplay);
+
         this.buildClient();
 
         String url = baseUrl + "/service/servicenow-readwrite/import/u_rest_u_request";
@@ -196,7 +204,7 @@ public class RequestController {
                 .put("u_business_service", businessServiceId)
                 .put("u_short_description", shortDescription)
                 .put("u_comments", comments)
-                .put("u_correlation_id", "skav012too1338forguids") // TODO: Update with java.util.UUID.randomUUID();
+                .put("u_correlation_id", "skav012too1339forguids") // TODO: Update with java.util.UUID.randomUUID();
                 .put("u_watch_list", watchList)
                 .put("u_correlation_display", correlationDisplay);
 
@@ -204,6 +212,8 @@ public class RequestController {
             // Submit ticket
             ResponseBody responseBody = post(url, body.toString());
             JSONObject serviceNowResponse = new JSONObject(responseBody.string());
+
+            logger.info("serviceNowRespose = ", serviceNowResponse);
 
             if (!serviceNowResponse.isNull("result")) {
                 JSONObject result = serviceNowResponse.getJSONObject("result");
