@@ -130,7 +130,7 @@ public class RequestController {
                                                 @RequestBody String body) throws IOException {
 
         String testVar = "This is to see if logger.info() logs variables";
-        logger.info("createServiceRequest() called with arguments", requestorUpi, testVar, displayName, mail, body);
+        logger.info("createServiceRequest() called with arguments requestorUPi {}, testVar {}, displayName {}, mail {}, body {}", requestorUpi, testVar, displayName, mail, body);
 
         return this.createRequest("vm", requestorUpi, displayName, mail, body);
     }
