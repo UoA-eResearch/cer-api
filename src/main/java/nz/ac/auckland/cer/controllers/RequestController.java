@@ -88,6 +88,8 @@ public class RequestController {
                 .addHeader("apikey", apiKey)
                 .post(body)
                 .build();
+        logger.info("post() local variable apikey = {}", apiKey);
+        logger.info("post() local variable request = {}", request);
         Response response = client.newCall(request).execute();
         return response.body();
     }
