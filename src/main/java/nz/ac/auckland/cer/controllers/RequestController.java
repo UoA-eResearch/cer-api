@@ -129,8 +129,7 @@ public class RequestController {
                                                 @RequestAttribute(value = "mail") String mail,
                                                 @RequestBody String body) throws IOException {
 
-        String testVar = "This is to see if logger.info() logs variables";
-        logger.info("createServiceRequest() called with arguments requestorUPi {}, testVar {}, displayName {}, mail {}, body {}", requestorUpi, testVar, displayName, mail, body);
+        logger.info("createServiceRequest() called with arguments requestorUPi: {}, displayName: {}, mail: {}, body: {}", requestorUpi, displayName, mail, body);
 
         return this.createRequest("vm", requestorUpi, displayName, mail, body);
     }
@@ -151,7 +150,7 @@ public class RequestController {
     private ResponseEntity<Object> createRequest(String requestConfigKey, String requestorUpi, String displayName,
                                                  String mail, String body) throws IOException {
 
-        logger.info("createRequest() called with arguments", requestConfigKey, requestorUpi, displayName, mail, body);
+        logger.info("createRequest() called with arguments requestConfigKey: {}, requestorUpid: {}, displayName: {}, mail: {}, body: {}", requestConfigKey, requestorUpi, displayName, mail, body);
 
         RequestConfig requestConfig = this.getRequestConfig(requestConfigKey);
 
@@ -184,7 +183,7 @@ public class RequestController {
                                                          String cmdbCiId, String assignmentGroup, String businessServiceId,
                                                          String shortDescription, String comments, String watchList, String correlationDisplay) throws IOException {
 
-        logger.info("sendServiceNowRequest() called with arguments", requestorUpi, category, subcategory, cmdbCiId, assignmentGroup, businessServiceId, shortDescription, comments, watchList, correlationDisplay);
+        logger.info("sendServiceNowRequest() called with arguments requestorUpi: {}, category: {}, subcategory: {}, cmdbCiId: {}, assignmentGroup: {}, businessServiceId: {}, shortDescription: {}, comments: {}, watchList: {}, correlationDisplay: {}", requestorUpi, category, subcategory, cmdbCiId, assignmentGroup, businessServiceId, shortDescription, comments, watchList, correlationDisplay);
 
         this.buildClient();
 
@@ -214,7 +213,7 @@ public class RequestController {
             ResponseBody responseBody = post(url, body.toString());
             JSONObject serviceNowResponse = new JSONObject(responseBody.string());
 
-            logger.info("serviceNowRespose = ", serviceNowResponse);
+            logger.info("serviceNowRespose = {}", serviceNowResponse);
 
             if (!serviceNowResponse.isNull("result")) {
                 JSONObject result = serviceNowResponse.getJSONObject("result");
