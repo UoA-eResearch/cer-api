@@ -42,7 +42,7 @@ public class RequestController {
     @Value("${service-now.base-url}")
     private String baseUrl;
 
-    @Value("${service-now.api-key")
+    @Value("${service-now.api-key}")
     private String apiKey;
 
     @Value("${service-now.requests-config-file}")
@@ -206,7 +206,7 @@ public class RequestController {
                 .put("u_business_service", businessServiceId)
                 .put("u_short_description", shortDescription)
                 .put("u_comments", comments)
-                .put("u_correlation_id", "skav012too1339forguids") // TODO: Update with java.util.UUID.randomUUID();
+                .put("u_correlation_id", "skav012too1337forguids") // TODO: Update with java.util.UUID.randomUUID();
                 .put("u_watch_list", watchList)
                 .put("u_correlation_display", correlationDisplay);
 
