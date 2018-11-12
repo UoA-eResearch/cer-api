@@ -218,12 +218,15 @@ public class RequestController {
             logger.info("serviceNowRespose = {}", serviceNowResponse);
 
             if (!serviceNowResponse.isNull("result")) {
-                JSONObject result = serviceNowResponse.getJSONObject("result");
+                JSONObject result = serviceNowResponse.getJSONArray("result").getJSONObject(0);
                 httpStatus = HttpStatus.OK;
+                String ticketUrl = String.format("https://uoa%s.service-now.com/nav_to.do?uri=u_request.do?sys_id=%s",
+                        baseUrl == "https://api.auckland.ac.nz" ? "prod" : baseUrl.split("\\.")[1],
+                        result.getString("sys_id"));
                 response.put("status", httpStatus.value());
                 response.put("statusText", httpStatus.getReasonPhrase());
-                response.put("ticketNumber", result.getString("number"));
-                response.put("ticketUrl", baseUrl + "/nav_to.do?uri=/u_request.do?sys_id=" + result.getString("sys_id"));
+                response.put("ticketNumber", result.getString("display_value"));
+                response.put("ticketUrl", ticketUrl);
             } else if (!serviceNowResponse.isNull("error")) {
                 JSONObject error = serviceNowResponse.getJSONObject("error");
                 logger.error("status: " + httpStatus.value() + ", statusText: " + httpStatus.getReasonPhrase());
