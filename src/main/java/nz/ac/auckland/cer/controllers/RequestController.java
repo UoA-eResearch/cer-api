@@ -216,7 +216,7 @@ public class RequestController {
                 JSONObject result = serviceNowResponse.getJSONArray("result").getJSONObject(0);
                 httpStatus = HttpStatus.OK;
                 String ticketUrl = String.format("https://uoa%s.service-now.com/nav_to.do?uri=u_request.do?sys_id=%s",
-                        baseUrl == "https://api.auckland.ac.nz" ? "prod" : baseUrl.split("\\.")[1],
+                        baseUrl.equals("https://api.auckland.ac.nz") ? "prod" : baseUrl.split("\\.")[1],
                         result.getString("sys_id")); // Sets the ticket URL to uoa{prod/dev/test}.service-now.com/nav_to.do?uri=u_request.do?sys_id={sys_id} depending on API URL
                 response.put("status", httpStatus.value());
                 response.put("statusText", httpStatus.getReasonPhrase());
