@@ -88,8 +88,7 @@ public class RequestController {
                 .addHeader("apikey", apiKey)
                 .post(body)
                 .build();
-        logger.info("post() local variable apikey = {}", apiKey);
-        logger.info("post() local variable request = {}", request);
+        logger.info("Posting to Service-Now new request = {}", request);
         Response response = client.newCall(request).execute();
         return response.body();
     }
@@ -130,8 +129,6 @@ public class RequestController {
                                                 @RequestAttribute(value = "displayName") String displayName,
                                                 @RequestAttribute(value = "mail") String mail,
                                                 @RequestBody String body) throws IOException {
-
-        logger.info("createServiceRequest() called with arguments requestorUPi: {}, displayName: {}, mail: {}, body: {}", requestorUpi, displayName, mail, body);
 
         return this.createRequest("vm", requestorUpi, displayName, mail, body);
     }
@@ -185,8 +182,6 @@ public class RequestController {
                                                          String cmdbCiId, String assignmentGroup, String businessServiceId,
                                                          String shortDescription, String comments, String watchList, String correlationDisplay) throws IOException {
 
-        logger.info("sendServiceNowRequest() called with arguments requestorUpi: {}, category: {}, subcategory: {}, cmdbCiId: {}, assignmentGroup: {}, businessServiceId: {}, shortDescription: {}, comments: {}, watchList: {}, correlationDisplay: {}", requestorUpi, category, subcategory, cmdbCiId, assignmentGroup, businessServiceId, shortDescription, comments, watchList, correlationDisplay);
-
         this.buildClient();
 
         String url = baseUrl + "/service/servicenow-readwrite/import/u_rest_u_request";
@@ -215,14 +210,14 @@ public class RequestController {
             ResponseBody responseBody = post(url, body.toString());
             JSONObject serviceNowResponse = new JSONObject(responseBody.string());
 
-            logger.info("serviceNowRespose = {}", serviceNowResponse);
+            logger.info("Service-Now responsed with = {}", serviceNowResponse);
 
             if (!serviceNowResponse.isNull("result")) {
                 JSONObject result = serviceNowResponse.getJSONArray("result").getJSONObject(0);
                 httpStatus = HttpStatus.OK;
                 String ticketUrl = String.format("https://uoa%s.service-now.com/nav_to.do?uri=u_request.do?sys_id=%s",
                         baseUrl == "https://api.auckland.ac.nz" ? "prod" : baseUrl.split("\\.")[1],
-                        result.getString("sys_id"));
+                        result.getString("sys_id")); // Sets the ticket URL to uoa{prod/dev/test}.service-now.com/nav_to.do?uri=u_request.do?sys_id={sys_id} depending on API URL
                 response.put("status", httpStatus.value());
                 response.put("statusText", httpStatus.getReasonPhrase());
                 response.put("ticketNumber", result.getString("display_value"));
