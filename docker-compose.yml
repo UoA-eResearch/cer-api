@@ -10,6 +10,7 @@ services:
       - SN_BASE_URL
       - SN_USER
       - SN_PASSWORD
+      - SN_API_KEY
       - SN_REQUESTS_CONFIG_FILE
       - https_proxy
     volumes:

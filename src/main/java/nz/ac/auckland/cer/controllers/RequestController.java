@@ -42,11 +42,8 @@ public class RequestController {
     @Value("${service-now.base-url}")
     private String baseUrl;
 
-    @Value("${service-now.user}")
-    private String user;
-
-    @Value("${service-now.password}")
-    private String password;
+    @Value("${service-now.api-key}")
+    private String apiKey;
 
     @Value("${service-now.requests-config-file}")
     private String requestsConfigFile;
@@ -71,17 +68,6 @@ public class RequestController {
                 builder.proxy(proxy);
             }
 
-            builder.authenticator(new Authenticator() {
-                @Override
-                public Request authenticate(Route route, Response response) throws IOException {
-                    if (responseCount(response) >= 3) {
-                        return null; // If we've failed 3 times, give up. - in real life, never give up!!
-                    }
-
-                    String credential = Credentials.basic(user, password);
-                    return response.request().newBuilder().header("Authorization", credential).build();
-                }
-            });
             client = builder.build();
         }
     }
@@ -98,8 +84,11 @@ public class RequestController {
         okhttp3.RequestBody body = okhttp3.RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("apikey", apiKey)
                 .post(body)
                 .build();
+        logger.info("Posting to Service-Now new request = {}", request);
         Response response = client.newCall(request).execute();
         return response.body();
     }
@@ -159,6 +148,9 @@ public class RequestController {
 
     private ResponseEntity<Object> createRequest(String requestConfigKey, String requestorUpi, String displayName,
                                                  String mail, String body) throws IOException {
+
+        logger.info("createRequest() called with arguments requestConfigKey: {}, requestorUpid: {}, displayName: {}, mail: {}, body: {}", requestConfigKey, requestorUpi, displayName, mail, body);
+
         RequestConfig requestConfig = this.getRequestConfig(requestConfigKey);
 
         // Generate comments based on template
@@ -171,7 +163,7 @@ public class RequestController {
 
         return this.sendServiceNowRequest(requestorUpi, requestConfig.getCategory(), requestConfig.getSubcategory(),
                 requestConfig.getCmdbCiId(), requestConfig.getAssignmentGroupId(), requestConfig.getBusinessServiceId(),
-                shortDescription, output, requestConfig.getWatchList());
+                shortDescription, output, requestConfig.getWatchList(), requestConfig.getCorrelationDisplay());
     }
 
     private StringTemplate getTemplate(String templateName, String body) throws IOException {
@@ -188,10 +180,11 @@ public class RequestController {
 
     private ResponseEntity<Object> sendServiceNowRequest(String requestorUpi, String category, String subcategory,
                                                          String cmdbCiId, String assignmentGroup, String businessServiceId,
-                                                         String shortDescription, String comments, String[] watchList) throws IOException {
+                                                         String shortDescription, String comments, String watchList, String correlationDisplay) throws IOException {
+
         this.buildClient();
 
-        String url = baseUrl + "/api/now/table/u_request";
+        String url = baseUrl + "/service/servicenow-readwrite/import/u_rest_u_request";
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
         JSONObject response = new JSONObject();
@@ -201,27 +194,34 @@ public class RequestController {
         // Create ticket body
         JSONObject body = new JSONObject()
                 .put("u_requestor", requestorUpi)
-                .put("assignment_group", assignmentGroup)
-                .put("category", category)
-                .put("subcategory", subcategory)
-                .put("cmdb_ci", cmdbCiId)
+                .put("u_assignment_group", assignmentGroup)
+                .put("u_category", category)
+                .put("u_subcategory", subcategory)
+                .put("u_cmdb_ci", cmdbCiId)
                 .put("u_business_service", businessServiceId)
-                .put("short_description", shortDescription)
-                .put("comments", comments)
-                .put("watch_list", String.join(",", watchList));
+                .put("u_short_description", shortDescription)
+                .put("u_comments", comments)
+                .put("u_correlation_id", java.util.UUID.randomUUID().toString())
+                .put("u_watch_list", watchList)
+                .put("u_correlation_display", correlationDisplay);
 
         try {
             // Submit ticket
             ResponseBody responseBody = post(url, body.toString());
             JSONObject serviceNowResponse = new JSONObject(responseBody.string());
 
+            logger.info("Service-Now responsed with = {}", serviceNowResponse);
+
             if (!serviceNowResponse.isNull("result")) {
-                JSONObject result = serviceNowResponse.getJSONObject("result");
+                JSONObject result = serviceNowResponse.getJSONArray("result").getJSONObject(0);
                 httpStatus = HttpStatus.OK;
+                String ticketUrl = String.format("https://uoa%s.service-now.com/nav_to.do?uri=u_request.do?sys_id=%s",
+                        baseUrl.equals("https://api.auckland.ac.nz") ? "prod" : baseUrl.split("\\.")[1],
+                        result.getString("sys_id")); // Sets the ticket URL to uoa{prod/dev/test}.service-now.com/nav_to.do?uri=u_request.do?sys_id={sys_id} depending on API URL
                 response.put("status", httpStatus.value());
                 response.put("statusText", httpStatus.getReasonPhrase());
-                response.put("ticketNumber", result.getString("number"));
-                response.put("ticketUrl", baseUrl + "/nav_to.do?uri=/u_request.do?sys_id=" + result.getString("sys_id"));
+                response.put("ticketNumber", result.getString("display_value"));
+                response.put("ticketUrl", ticketUrl);
             } else if (!serviceNowResponse.isNull("error")) {
                 JSONObject error = serviceNowResponse.getJSONObject("error");
                 logger.error("status: " + httpStatus.value() + ", statusText: " + httpStatus.getReasonPhrase());
