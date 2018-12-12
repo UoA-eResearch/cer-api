@@ -8,8 +8,9 @@ Researcher:
     Name: $displayName$
     Username: $requestorUpi$
     Email: $mail$
-Storage type: $storageType$
+Request type: $requestType$
 
+$if(title)$
 Project
 ======================
 Title: $title$
@@ -28,5 +29,15 @@ Data Size
 This year: $sizeThisYear$ $unitThisYear$
 Next year: $sizeNextYear$ $unitNextYear$
 Comments: $comments$
+$endif$
+
+$else$
+Request Details
+======================
+Folder name: $existingFolderName$
+Update type: $updateType$
+Request details: $requestDetails$
+Comments: $comments$
+$endif$
 
 Thanks.
