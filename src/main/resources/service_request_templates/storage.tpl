@@ -29,7 +29,6 @@ Data Size
 This year: $sizeThisYear$ $unitThisYear$
 Next year: $sizeNextYear$ $unitNextYear$
 Comments: $comments$
-$endif$
 
 $else$
 Request Details
