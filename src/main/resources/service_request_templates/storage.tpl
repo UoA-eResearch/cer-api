@@ -35,8 +35,8 @@ $else$
 Request Details
 ======================
 Folder name: $existingFolderName$
-Update type: $updateType$
-Request details: $requestDetails; separator=", "$
+Update type: $updateType; separator=", "$
+Request details: $requestDetails$
 Comments: $comments$
 $endif$
 
