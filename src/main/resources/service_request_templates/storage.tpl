@@ -15,6 +15,7 @@ Project
 ======================
 Title: $title$
 Abstract: $abstract$
+Storage options: $storageOptions; separator=", "$
 End date: $endDate$
 Fields of research: $fieldOfResearch:{n|$\n$$\ $$\ $$\ $$\ $$n$}$
 
@@ -35,7 +36,7 @@ Request Details
 ======================
 Folder name: $existingFolderName$
 Update type: $updateType$
-Request details: $requestDetails$
+Request details: $requestDetails; separator=", "$
 Comments: $comments$
 $endif$
 
