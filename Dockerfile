@@ -1,4 +1,4 @@
-FROM            maven:3.5.4-jdk-8
+FROM            maven:3.5.4-jdk-8 AS prepare
 MAINTAINER      Sam Kavanagh "s.kavanagh@auckland.ac.nz"
 
 ARG             http_proxy
@@ -23,6 +23,16 @@ RUN		if [ -z $http_proxy ]; then \
 			mvn dependency:go-offline; \
 			mvn verify clean --fail-never; \
 		fi;
+
+# Local development stage.
+FROM		prepare	AS dev
+VOLUME		["/cer-api/src","/application.properties","/cer-api/target"]
+
+ENTRYPOINT ["mvn","spring-boot:run","-Drun.jvmArguments=-Dspring.config.location=/application.properties"]
+
+
+# Build stage.
+FROM		prepare	AS build
 
 # Copy src files and build project
 COPY            /src /cer-api/src
