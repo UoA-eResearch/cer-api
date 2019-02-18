@@ -25,7 +25,7 @@ RUN		if [ -z $http_proxy ]; then \
 		fi;
 
 # Local development stage.
-FROM		prepare	AS dev
+FROM		prepare	AS local
 VOLUME		["/cer-api/src","/application.properties","/cer-api/target"]
 
 ENTRYPOINT ["mvn","spring-boot:run","-Drun.jvmArguments=-Dspring.config.location=/application.properties"]
