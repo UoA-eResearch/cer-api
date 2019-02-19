@@ -11,6 +11,7 @@ WORKDIR         /cer-api/
 
 # Resolve dependencies with maven, stops maven from re-downloading dependencies
 COPY            /pom.xml /cer-api/pom.xml
+COPY		/docker-entrypoint.sh /
 
 # Configure proxy for maven on UoA vms
 RUN		if [ -z $http_proxy ]; then \
@@ -26,9 +27,8 @@ RUN		if [ -z $http_proxy ]; then \
 
 # Local development stage.
 FROM		prepare	AS local
-VOLUME		["/cer-api/src","/application.properties","/cer-api/target"]
-
-ENTRYPOINT ["mvn","spring-boot:run","-Drun.jvmArguments=-Dspring.config.location=/application.properties"]
+VOLUME		["/cer-api/src","/application.properties","/cer-api/target","/cer-api/pom.xml"]
+ENTRYPOINT ["/docker-entrypoint.sh","--local"]
 
 
 # Build stage.
@@ -40,4 +40,4 @@ COPY            application.properties /
 RUN             mvn -o package
 RUN             mv target/app.jar /app.jar
 
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.config.location=file:/application.properties","-jar","/app.jar"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
