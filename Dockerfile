@@ -12,8 +12,8 @@ FROM		prepare	AS local
 
 # Create a user in the image that has the same UID as the host user and run the Docker image as the user, so that generated classfiles can be shared between host and image.
 ARG		current_uid
-RUN		useradd -m --uid $current_uid cerapi-user
-USER		cerapi-user
+RUN		useradd -m --uid $current_uid cerapi
+USER		cerapi
 
 # Mount source and generated classfile directories as volumes
 VOLUME		["/cer-api/src","/application.properties","/cer-api/target","/cer-api/pom.xml","/docker-entrypoint.sh"]
