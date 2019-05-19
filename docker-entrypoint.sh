@@ -4,6 +4,8 @@ if [ "$1" == "--local" ]; then
     # If the local flag is passed, we run a version of the cer api project set up for development.
     # Run dependency to make sure new dependencies since last Docker build are installed.
     mvn dependency:go-offline
+    # Run a version of spring boot which watches the /target directory, and reloads when
+    # generated classfiles change.
     mvn spring-boot:run -Drun.jvmArguments=-Dspring.config.location=/application.properties
     exit
 fi
