@@ -30,6 +30,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.util.Arrays;
+import java.util.stream.*;
+import java.util.List;
+
 
 @RestController
 public class RequestController {
@@ -93,14 +97,26 @@ public class RequestController {
         return response.body();
     }
 
+    /*
+     * Given a ; separated list, gets primary email address (prioritizing institutional addresses)
+     */
     private String getPrimaryEmail(String mail) {
         String[] addresses = mail.split(";");
-
-        if (addresses.length > 0) {
-            return addresses[0];
+        String[] emailPriorities = {
+                ".*@auckland.ac.nz",
+                ".*@aucklanduni.ac.nz",
+                ".*ac.nz",
+        };
+  
+        for (String emailPriority : emailPriorities) {
+          List<String> matchingEmail = Arrays.asList(addresses).stream()
+            .filter(email -> email.matches(emailPriority))
+            .collect(Collectors.toList());
+  
+            if(matchingEmail.size() != 0)
+              return matchingEmail.get(0);
         }
-
-        return "";
+          return addresses[0];
     }
 
     private void loadRequestConfigurations() throws IOException {
