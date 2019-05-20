@@ -11,7 +11,8 @@ WORKDIR         /cer-api/
 FROM		prepare	AS local
 
 # Create a user in the image that has the same UID as the host user and run the Docker image as the user, so that generated classfiles can be shared between host and image.
-ARG		current_uid=1000  # Defaults to 1000 if not set in hub.env.
+# Default user id to 1000 if not set in hub.env.
+ARG		current_uid=1000
 RUN		useradd -m --uid $current_uid cerapi-user
 USER		cerapi-user
 
