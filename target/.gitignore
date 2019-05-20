@@ -1,0 +1,22 @@
+# This file ensures when the repository is cloned,
+# this /target directory exists and is owned by the user
+# who clones the repository.
+# This is because /target is a Docker volume mounted
+# into the local development Docker image, so that
+# when we change the source, a host process
+# (e.g. mvn compile or an IDE) can compile and
+# generate changed classfiles, put them into this directory,
+# and the Docker image Maven process can detect and reload
+# the server process.
+# Docker creates an empty directory as root when a
+# volume does not exist on the host. (https://docs.docker.com/storage/)
+# So if this directory does not exist at the time of
+# running the local development Docker image,
+# a root-owned /target directory will be created by Docker.
+# This is not ideal as the host process would need to
+# be run by root in order to compile and generate classfiles.
+
+# Ignore everything in this directory
+*
+# Except this file
+!.gitignore

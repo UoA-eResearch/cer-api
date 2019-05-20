@@ -1,16 +1,34 @@
-FROM            maven:3.5.4-jdk-8
+FROM            maven:3.6.1-jdk-8 AS prepare
 MAINTAINER      Sam Kavanagh "s.kavanagh@auckland.ac.nz"
 
 ARG             http_proxy
 ARG             https_proxy
 
-ENV             MAVEN_HOME /opt/maven
-
-# Build cer api jar with maven
 WORKDIR         /cer-api/
+
+
+# Local development stage.
+FROM		prepare	AS local
+
+# Create a user in the image that has the same UID as the host user and run the Docker image as the user, so that generated classfiles can be shared between host and image.
+# Default user id to 1000 if not set in hub.env.
+ARG		current_uid=1000
+RUN		useradd -m --uid $current_uid cerapi-user
+USER		cerapi-user
+
+# Mount source and generated classfile directories as volumes
+VOLUME		["/cer-api/src","/application.properties","/cer-api/target","/cer-api/pom.xml","/docker-entrypoint.sh"]
+
+ENTRYPOINT ["/docker-entrypoint.sh","--local"]
+
+
+# Build stage.
+FROM		prepare	AS build
+
 
 # Resolve dependencies with maven, stops maven from re-downloading dependencies
 COPY            /pom.xml /cer-api/pom.xml
+COPY		/docker-entrypoint.sh /
 
 # Configure proxy for maven on UoA vms
 RUN		if [ -z $http_proxy ]; then \
@@ -30,4 +48,4 @@ COPY            application.properties /
 RUN             mvn -o package
 RUN             mv target/app.jar /app.jar
 
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.config.location=file:/application.properties","-jar","/app.jar"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
