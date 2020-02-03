@@ -169,17 +169,33 @@ public class RequestController {
 
         RequestConfig requestConfig = this.getRequestConfig(requestConfigKey);
 
-        // Generate comments based on template
-        StringTemplate template = this.getTemplate("service_request_templates/" + requestConfigKey + ".tpl", body);
-        template.setAttribute("requestorUpi", requestorUpi);
-        template.setAttribute("displayName", displayName);
-        template.setAttribute("mail", this.getPrimaryEmail(mail));
+        /**
+         * Create a HashMap of StringTemplates containing the request body in a human-readable and its JSON equivalent format.
+         * This HashMap is then looped through, and the StringTemplate attributes set.
+         * 
+         * The two StringTemplates (human-readable and JSON) are then sent on to the method sendServiceNowRequest(), where they
+         * represent the u_comments and u_work_notes respectively.
+         */
+        HashMap<String, StringTemplate> templates = new HashMap<>();
+        templates.put(requestConfigKey, this.getTemplate("service_request_templates/" + requestConfigKey + ".tpl", body)); // Human-readable format
+        templates.put(requestConfigKey + "-json", this.getTemplate("service_request_templates/" + requestConfigKey + "-json.tpl", body)); // JSON format 
+
+        for (String i: templates.keySet()) {
+            StringTemplate currentTemplate = templates.get(i);
+            currentTemplate.setAttribute("requestorUpi", requestorUpi);
+            currentTemplate.setAttribute("displayName", displayName);
+            currentTemplate.setAttribute("mail", this.getPrimaryEmail(mail));
+        }
+
+        // Log the human-readable and JSON fields to be sent to ServiceNow
+        logger.info(templates.get(requestConfigKey).toString());
+        logger.info(templates.get(requestConfigKey + "-json").toString());
+
         String shortDescription = requestConfig.getShortDescription() + ": " + displayName + ", " + requestorUpi;
-        String output = template.toString();
 
         return this.sendServiceNowRequest(requestorUpi, requestConfig.getCategory(), requestConfig.getSubcategory(),
                 requestConfig.getCmdbCiId(), requestConfig.getAssignmentGroupId(), requestConfig.getBusinessServiceId(),
-                shortDescription, output, requestConfig.getWatchList(), requestConfig.getCorrelationDisplay());
+                shortDescription, templates.get(requestConfigKey).toString(), templates.get(requestConfigKey + "-json").toString(), requestConfig.getWatchList(), requestConfig.getCorrelationDisplay());
     }
 
     private StringTemplate getTemplate(String templateName, String body) throws IOException {
@@ -196,7 +212,7 @@ public class RequestController {
 
     private ResponseEntity<Object> sendServiceNowRequest(String requestorUpi, String category, String subcategory,
                                                          String cmdbCiId, String assignmentGroup, String businessServiceId,
-                                                         String shortDescription, String comments, String watchList, String correlationDisplay) throws IOException {
+                                                         String shortDescription, String comments, String workNotes, String watchList, String correlationDisplay) throws IOException {
 
         this.buildClient();
 
@@ -217,6 +233,7 @@ public class RequestController {
                 .put("u_business_service", businessServiceId)
                 .put("u_short_description", shortDescription)
                 .put("u_comments", comments)
+                .put("u_work_notes", workNotes)
                 .put("u_correlation_id", java.util.UUID.randomUUID().toString())
                 .put("u_watch_list", watchList)
                 .put("u_correlation_display", correlationDisplay);
