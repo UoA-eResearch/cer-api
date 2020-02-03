@@ -171,6 +171,29 @@ public class RequestController {
 
         // Generate comments based on template
         StringTemplate template = this.getTemplate("service_request_templates/" + requestConfigKey + ".tpl", body);
+
+        /**
+         * Create a HashMap of StringTemplates containing the request body in a human-readable and its JSON equivalent format.
+         * This HashMap is then looped through, and the StringTemplate attributes set.
+         * 
+         * The two StringTemplates (human-readable and JSON) are then sent on to the method sendServiceNowRequest(), where they
+         * represent the u_comments and u_work_notes respectively.
+         */
+        HashMap<String, StringTemplate> templates = new HashMap<>();
+        templates.put(requestConfigKey, this.getTemplate("service_request_templates/" + requestConfigKey + ".tpl", body));
+        templates.put(requestConfigKey + "-json", this.getTemplate("service_request_templates/" + requestConfigKey + "-json.tpl", body)); // Create the JSON equivalent format 
+
+        for (String i: templates.keySet()) {
+            StringTemplate currentTemplate = templates.get(i);
+            currentTemplate.setAttribute("requestorUpi", requestorUpi);
+            currentTemplate.setAttribute("displayName", displayName);
+            currentTemplate.setAttribute("mail", this.getPrimaryEmail(mail));
+        }
+
+        // Log it out for testing purposes to start off with
+        logger.info(templates.get(requestConfigKey).toString());
+        logger.info(templates.get(requestConfigKey + "-json").toString());
+
         template.setAttribute("requestorUpi", requestorUpi);
         template.setAttribute("displayName", displayName);
         template.setAttribute("mail", this.getPrimaryEmail(mail));
