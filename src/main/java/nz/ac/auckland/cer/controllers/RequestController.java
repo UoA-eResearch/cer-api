@@ -202,7 +202,7 @@ public class RequestController {
 
         return this.sendServiceNowRequest(requestorUpi, requestConfig.getCategory(), requestConfig.getSubcategory(),
                 requestConfig.getCmdbCiId(), requestConfig.getAssignmentGroupId(), requestConfig.getBusinessServiceId(),
-                shortDescription, output, requestConfig.getWatchList(), requestConfig.getCorrelationDisplay());
+                shortDescription, templates.get(requestConfigKey).toString(), requestConfig.getWatchList(), requestConfig.getCorrelationDisplay());
     }
 
     private StringTemplate getTemplate(String templateName, String body) throws IOException {

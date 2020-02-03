@@ -3,23 +3,23 @@
         "Researcher": {
             "displayName": "$displayName$",
             "requestorUpi": "$requestorUpi$",
-            "mail": "$mail$",
-        }
+            "mail": "$mail$"
+        },
         "requestType": "$requestType$",
-    }
+    },
     $if(title)$
     "Project": {
         "title": "$title$",
         "abstract": "$abstract$",
         "storageOptions": "$storageOptions$",
         "endDate": "$endDate$",
-        "fieldOfResearch": "$fieldOfResearch$",
-    }
+        "fieldOfResearch": "$fieldOfResearch$"
+    },
     "DataInfo": {
         "shortName": "$shortName$",
         "dataRequirements": "$dataRequirements$",
-        "projectMembers": "$projectMembers$",
-    }
+        "projectMembers": "$projectMembers$"
+    },
     "DataSize": {
         "sizeThisYear":  "$sizeThisYear$",
         "sizeNextYear": "$sizeNextYear$",
