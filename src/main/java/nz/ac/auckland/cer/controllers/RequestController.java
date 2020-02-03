@@ -169,9 +169,6 @@ public class RequestController {
 
         RequestConfig requestConfig = this.getRequestConfig(requestConfigKey);
 
-        // Generate comments based on template
-        StringTemplate template = this.getTemplate("service_request_templates/" + requestConfigKey + ".tpl", body);
-
         /**
          * Create a HashMap of StringTemplates containing the request body in a human-readable and its JSON equivalent format.
          * This HashMap is then looped through, and the StringTemplate attributes set.
@@ -180,8 +177,8 @@ public class RequestController {
          * represent the u_comments and u_work_notes respectively.
          */
         HashMap<String, StringTemplate> templates = new HashMap<>();
-        templates.put(requestConfigKey, this.getTemplate("service_request_templates/" + requestConfigKey + ".tpl", body));
-        templates.put(requestConfigKey + "-json", this.getTemplate("service_request_templates/" + requestConfigKey + "-json.tpl", body)); // Create the JSON equivalent format 
+        templates.put(requestConfigKey, this.getTemplate("service_request_templates/" + requestConfigKey + ".tpl", body)); // Human-readable format
+        templates.put(requestConfigKey + "-json", this.getTemplate("service_request_templates/" + requestConfigKey + "-json.tpl", body)); // JSON format 
 
         for (String i: templates.keySet()) {
             StringTemplate currentTemplate = templates.get(i);
@@ -194,11 +191,7 @@ public class RequestController {
         logger.info(templates.get(requestConfigKey).toString());
         logger.info(templates.get(requestConfigKey + "-json").toString());
 
-        template.setAttribute("requestorUpi", requestorUpi);
-        template.setAttribute("displayName", displayName);
-        template.setAttribute("mail", this.getPrimaryEmail(mail));
         String shortDescription = requestConfig.getShortDescription() + ": " + displayName + ", " + requestorUpi;
-        String output = template.toString();
 
         return this.sendServiceNowRequest(requestorUpi, requestConfig.getCategory(), requestConfig.getSubcategory(),
                 requestConfig.getCmdbCiId(), requestConfig.getAssignmentGroupId(), requestConfig.getBusinessServiceId(),
