@@ -5,7 +5,7 @@
             "requestorUpi": "$requestorUpi$",
             "mail": "$mail$"
         },
-        "requestType": "$requestType$",
+        "requestType": "$requestType$"
     },
     $if(title)$
     "Project": {
