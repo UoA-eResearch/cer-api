@@ -190,7 +190,7 @@ public class RequestController {
             currentTemplate.setAttribute("mail", this.getPrimaryEmail(mail));
         }
 
-        // Log it out for testing purposes to start off with
+        // Log the human-readable and JSON fields to be sent to ServiceNow
         logger.info(templates.get(requestConfigKey).toString());
         logger.info(templates.get(requestConfigKey + "-json").toString());
 
@@ -202,7 +202,7 @@ public class RequestController {
 
         return this.sendServiceNowRequest(requestorUpi, requestConfig.getCategory(), requestConfig.getSubcategory(),
                 requestConfig.getCmdbCiId(), requestConfig.getAssignmentGroupId(), requestConfig.getBusinessServiceId(),
-                shortDescription, templates.get(requestConfigKey).toString(), requestConfig.getWatchList(), requestConfig.getCorrelationDisplay());
+                shortDescription, templates.get(requestConfigKey).toString(), templates.get(requestConfigKey + "-json").toString(), requestConfig.getWatchList(), requestConfig.getCorrelationDisplay());
     }
 
     private StringTemplate getTemplate(String templateName, String body) throws IOException {
@@ -219,7 +219,7 @@ public class RequestController {
 
     private ResponseEntity<Object> sendServiceNowRequest(String requestorUpi, String category, String subcategory,
                                                          String cmdbCiId, String assignmentGroup, String businessServiceId,
-                                                         String shortDescription, String comments, String watchList, String correlationDisplay) throws IOException {
+                                                         String shortDescription, String comments, String workNotes, String watchList, String correlationDisplay) throws IOException {
 
         this.buildClient();
 
@@ -240,6 +240,7 @@ public class RequestController {
                 .put("u_business_service", businessServiceId)
                 .put("u_short_description", shortDescription)
                 .put("u_comments", comments)
+                .put("u_work_notes", workNotes)
                 .put("u_correlation_id", java.util.UUID.randomUUID().toString())
                 .put("u_watch_list", watchList)
                 .put("u_correlation_display", correlationDisplay);
